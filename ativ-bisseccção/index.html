@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <title>Método da Bisseção e Teorema de Bolzano</title>
+  <style>
+    body { font-family: Arial, sans-serif; margin: 20px; }
+    label { display: block; margin-top: 10px; }
+    input { margin-top: 5px; padding: 5px; width: 200px; }
+    button { margin-top: 15px; padding: 8px 12px; }
+    pre { background: #f4f4f4; padding: 10px; border-radius: 5px; margin-top: 20px; }
+  </style>
+</head>
+<body>
+  <h2>Método da Bisseção e Teorema de Bolzano</h2>
+
+  <label>Grau do Polinômio:</label>
+  <input type="number" id="grau" value="3">
+
+  <label>Coeficientes (separe por vírgula, do termo constante até o maior grau):</label>
+  <input type="text" id="coeficientes" value="3,-9,0,1">
+  <small>Exemplo: para x³ - 9x + 3 → digite <b>3,-9,0,1</b></small>
+
+  <label>Erro (ε):</label>
+  <input type="number" step="0.0001" id="erro" value="0.0001">
+
+  <label>Início do intervalo (a):</label>
+  <input type="number" id="a" value="-5">
+
+  <label>Fim do intervalo (b):</label>
+  <input type="number" id="b" value="5">
+
+  <button onclick="calcular()">Rodar</button>
+
+  <pre id="saida"></pre>
+
+  <script>
+    function calcular() {
+      const grau = parseInt(document.getElementById("grau").value);
+      const coefInput = document.getElementById("coeficientes").value;
+      const coeficientes = coefInput.split(",").map(Number);
+
+      const erro = parseFloat(document.getElementById("erro").value);
+      const a = parseFloat(document.getElementById("a").value);
+      const b = parseFloat(document.getElementById("b").value);
+
+      let saida = "";
+
+      // Função polinomial
+      function f(x) {
+        let resultado = 0;
+        for (let i = 0; i <= grau; i++) {
+          resultado += coeficientes[i] * Math.pow(x, i);
+        }
+        return resultado;
+      }
+
+      // Método da Bisseção
+      function bisseccao(a, b) {
+        if (f(a) * f(b) >= 0) {
+          saida += `⚠️ Intervalo inválido: f(${a}) e f(${b}) não têm sinais opostos.\n\n`;
+        } else {
+          let m, iteracao = 0;
+
+          saida += `✅ Intervalo válido: [${a}, ${b}]\n`;
+
+          while ((b - a) / 2 > erro) {
+            m = (a + b) / 2;
+            iteracao++;
+            saida += `Iteração ${iteracao}: a=${a}, b=${b}, m=${m}, f(m)=${f(m)}\n`;
+
+            if (f(m) === 0) break;
+
+            if (f(a) * f(m) < 0) {
+              b = m;
+            } else {
+              a = m;
+            }
+          }
+          saida += `👉 Raiz aproximada: ${(a + b) / 2} (com ε=${erro})\n\n`;
+        }
+      }
+
+      // Procurar intervalos com mudança de sinal
+      let limites = [];
+      for (let i = Math.floor(a); i < Math.ceil(b); i++) {
+        if (f(i) * f(i + 1) < 0) {
+          limites.push([i, i + 1]);
+        }
+      }
+
+      if (limites.length === 0) {
+        saida += "⚠️ Nenhuma raiz detectada no intervalo dado.\n";
+      } else {
+        limites.forEach(intervalo => {
+          saida += `\n🔎 Intervalo encontrado: [${intervalo[0]}, ${intervalo[1]}]\n`;
+          bisseccao(intervalo[0], intervalo[1]);
+        });
+      }
+
+      document.getElementById("saida").textContent = saida;
+    }
+  </script>
+</body>
+</html>
