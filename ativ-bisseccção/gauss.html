@@ -24,6 +24,32 @@
 
   <pre id="saida"></pre>
 
+  <script>
+    let numVars;
 
+    function gerarMatriz() {
+      numVars = parseInt(document.getElementById("numVars").value);
+      let html = "<table><tr>";
+
+      // Cabeçalhos
+      for (let j = 1; j <= numVars; j++) {
+        html += `<th>x${j}</th>`;
+      }
+      html += "<th>Constante</th></tr>";
+
+      // Linhas da matriz aumentada
+      for (let i = 0; i < numVars; i++) {
+        html += "<tr>";
+        for (let j = 0; j <= numVars; j++) {
+          html += `<td><input type="number" id="cel-${i}-${j}" value="0"></td>`;
+        }
+        html += "</tr>";
+      }
+      html += "</table>";
+      document.getElementById("matrizInput").innerHTML = html;
+    }
+
+    
+  </script>
 </body>
 </html>
