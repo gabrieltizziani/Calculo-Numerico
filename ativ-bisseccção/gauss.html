@@ -1,53 +1,39 @@
 <!DOCTYPE html>
-<html lang="pt-BR">
+<html lang="en">
+
 <head>
-  <meta charset="UTF-8">
-  <title>Eliminação de Gauss</title>
-  <style>
-    body { font-family: Arial, sans-serif; margin: 20px; }
-    table { border-collapse: collapse; margin-top: 10px; }
-    td, th { border: 1px solid #ccc; padding: 5px; text-align: center; }
-    input { width: 60px; text-align: center; }
-    button { margin-top: 15px; padding: 8px 12px; }
-    pre { background: #f4f4f4; padding: 10px; border-radius: 5px; margin-top: 20px; }
-  </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-LN+7fdVzj6u52u30Kp6M/trliBMCMKTyK833zpbD+pXdCLuTusPj697FH4R/5mcr" crossorigin="anonymous">
+    <title>Document</title>
 </head>
+
 <body>
-  <h2>Sistemas Lineares - Eliminação de Gauss</h2>
+    <div class="container w-50 py-5">
+        <div class="card p-3 mb-2">
+            <div class="row">
+                <div class="col-md-6">
+                    <label for="numEquacoes" class="form-label">Número de Equações</label>
+                    <input type="number" id="numEquacoes" class="form-control" max="6">
+                </div>
 
-  <label>Quantidade de variáveis:</label>
-  <input type="number" id="numVars"  min="2" max="6">
-  <button onclick="gerarMatriz()">Gerar Matriz</button>
+                <div class="col-md-6 d-flex align-items-end">
+                    <button id="gerarMatriz" class="btn btn-primary">Gerar campos</button>
+                </div>
+            </div>
+        </div>
 
-  <div id="matrizInput"></div>
-  <button onclick="resolver()">Resolver Sistema</button>
+        <div class="card p-3 mb-2 d-none" id="matrizEquacoes">
+            <p>Coeficientes</p>
+            <form id="matrizForm"></form>
+            <button id="calcularBtn" class="btn  btn-success">Calcular</button>
+        </div>
 
-  <pre id="saida"></pre>
+        <div id="etapas" class="card p-3 d-none"></div>
+    </div>
 
-  <script>
-    let numVars;
-
-    function gerarMatriz() {
-      numVars = parseInt(document.getElementById("numVars").value);
-      let html = "<table><tr>";
-
-      
-      for (let j = 1; j <= numVars; j++) {
-        html += `<th>x${j}</th>`;
-      }
-      html += "<th>Constante</th></tr>";
-
-      
-      for (let i = 0; i < numVars; i++) {
-        html += "<tr>";
-        for (let j = 0; j <= numVars; j++) {
-          html += `<td><input type="number" id="cel-${i}-${j}" value="0"></td>`;
-        }
-        html += "</tr>";
-      }
-      html += "</table>";
-      document.getElementById("matrizInput").innerHTML = html;
-    }
-  </script>
+    <script src="gauss.js"></script>
 </body>
+
 </html>

@@ -1,105 +1,58 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-  <meta charset="UTF-8">
-  <title>Método da Bisseção e Teorema de Bolzano</title>
-  <style>
-    body { font-family: Arial, sans-serif; margin: 20px; }
-    label { display: block; margin-top: 10px; }
-    input { margin-top: 5px; padding: 5px; width: 200px; }
-    button { margin-top: 15px; padding: 8px 12px; }
-    pre { background: #f4f4f4; padding: 10px; border-radius: 5px; margin-top: 20px; }
-  </style>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Método da Bissecção</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" />
 </head>
 <body>
-  <h2>Método da Bisseção e Teorema de Bolzano</h2>
 
-  <label>Grau do Polinômio:</label>
-  <input type="number" id="grau" value="3">
+<div class="container my-5" style="max-width: 600px;">
+  <h2 class="mb-4 text-center">Método da Bissecção</h2>
 
-  <label>Coeficientes (separe por vírgula, do termo constante até o maior grau):</label>
-  <input type="text" id="coeficientes" value="3,-9,0,1">
-  <small>Exemplo: para x³ - 9x + 3 → digite <b>3,-9,0,1</b></small>
+  <div class="mb-3">
+    <label for="grau" class="form-label">Grau do polinômio</label>
+    <input type="number" min="1" class="form-control" id="grau" placeholder="Ex: 3" />
+  </div>
 
-  <label>Erro (ε):</label>
-  <input type="number" step="0.0001" id="erro" value="0.0001">
+  <div class="d-grid mb-3">
+    <button type="button" class="btn btn-primary" id="gerarCoef">Gerar campos dos coeficientes</button>
+  </div>
 
-  <label>Início do intervalo (a):</label>
-  <input type="number" id="a" value="-5">
+  <form id="form" onsubmit="return false;">
+    <div id="coeficientes" class="mb-3"></div>
 
-  <label>Fim do intervalo (b):</label>
-  <input type="number" id="b" value="5">
+    <div class="mb-3">
+      <label for="erro" class="form-label">Erro (precisão)</label>
+      <input type="number" step="any" min="0" class="form-control" id="erro" placeholder="Ex: 0.001" required />
+    </div>
 
-  <button onclick="calcular()">Rodar</button>
+    <div class="mb-3">
+      <label for="inicio" class="form-label">Início da busca</label>
+      <input type="number" step="any" class="form-control" id="inicio" placeholder="Ex: -100" required />
+    </div>
 
-  <pre id="saida"></pre>
+    <div class="mb-3">
+      <label for="fim" class="form-label">Fim da busca</label>
+      <input type="number" step="any" class="form-control" id="fim" placeholder="Ex: 100" required />
+    </div>
 
-  <script>
-    function calcular() {
-      const grau = parseInt(document.getElementById("grau").value);
-      const coefInput = document.getElementById("coeficientes").value;
-      const coeficientes = coefInput.split(",").map(Number);
+    <div class="mb-3">
+      <label for="passo" class="form-label">Passo de busca</label>
+      <input type="number" step="any" min="0.0001" class="form-control" id="passo" value="1" required />
+    </div>
 
-      const erro = parseFloat(document.getElementById("erro").value);
-      const a = parseFloat(document.getElementById("a").value);
-      const b = parseFloat(document.getElementById("b").value);
+    <div class="d-grid mb-3">
+      <button type="submit" class="btn btn-success" id="calcular">Calcular raízes</button>
+    </div>
+  </form>
 
-      let saida = "";
+  <div id="resultado" class="p-3 bg-light border rounded" style="min-height: 80px; white-space: pre-wrap; font-family: monospace;"></div>
+</div>
 
-      // Função polinomial
-      function f(x) {
-        let resultado = 0;
-        for (let i = 0; i <= grau; i++) {
-          resultado += coeficientes[i] * Math.pow(x, i);
-        }
-        return resultado;
-      }
+<script src="bisseccao.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
 
-      // Método da Bisseção
-      function bisseccao(a, b) {
-        if (f(a) * f(b) >= 0) {
-          saida += `⚠️ Intervalo inválido: f(${a}) e f(${b}) não têm sinais opostos.\n\n`;
-        } else {
-          let m, iteracao = 0;
-
-          saida += `✅ Intervalo válido: [${a}, ${b}]\n`;
-
-          while ((b - a) / 2 > erro) {
-            m = (a + b) / 2;
-            iteracao++;
-            saida += `Iteração ${iteracao}: a=${a}, b=${b}, m=${m}, f(m)=${f(m)}\n`;
-
-            if (f(m) === 0) break;
-
-            if (f(a) * f(m) < 0) {
-              b = m;
-            } else {
-              a = m;
-            }
-          }
-          saida += `👉 Raiz aproximada: ${(a + b) / 2} (com ε=${erro})\n\n`;
-        }
-      }
-
-      // Procurar intervalos com mudança de sinal
-      let limites = [];
-      for (let i = Math.floor(a); i < Math.ceil(b); i++) {
-        if (f(i) * f(i + 1) < 0) {
-          limites.push([i, i + 1]);
-        }
-      }
-
-      if (limites.length === 0) {
-        saida += "⚠️ Nenhuma raiz detectada no intervalo dado.\n";
-      } else {
-        limites.forEach(intervalo => {
-          saida += `\n🔎 Intervalo encontrado: [${intervalo[0]}, ${intervalo[1]}]\n`;
-          bisseccao(intervalo[0], intervalo[1]);
-        });
-      }
-
-      document.getElementById("saida").textContent = saida;
-    }
-  </script>
 </body>
 </html>
